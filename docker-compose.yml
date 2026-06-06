@@ -1,0 +1,176 @@
+# =============================================================================
+# Media Finder — automated media stack ("Servarr") for Plex
+# Host: Windows 11 + Docker Desktop (WSL2).  Start with:  docker compose up -d
+#
+# DEFAULT MODE = NO VPN.  The gluetun VPN service is fully pre-wired but stays
+# OFF (Compose profile "vpn").  To turn it on later, see README.md →
+# "Enabling the VPN later".  All host paths come from the .env file.
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # qBittorrent — the torrent download client.
+  # ---------------------------------------------------------------------------
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    # === DEFAULT (NO VPN): qBittorrent uses the normal Docker network ===
+    ports:
+      - "8080:8080"          # Web UI  ->  http://localhost:8080
+      - "6881:6881"          # torrent traffic (TCP)
+      - "6881:6881/udp"      # torrent traffic (UDP / DHT)
+    # === TO ENABLE VPN later: comment the ENTIRE `ports:` block above, then
+    #     uncomment the 3 lines below, change the qBittorrent download-client
+    #     Host to "gluetun" in Radarr + Sonarr, and start with:
+    #         docker compose --profile vpn up -d
+    # network_mode: "service:gluetun"
+    # depends_on:
+    #   gluetun:
+    #     condition: service_healthy
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
+    volumes:
+      - ${CONFIG_ROOT}/qbittorrent:/config
+      - ${DATA_ROOT}:/data
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Prowlarr — manages your indexers/trackers and syncs them to Radarr/Sonarr.
+  # ---------------------------------------------------------------------------
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    ports:
+      - "9696:9696"          # ->  http://localhost:9696
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_ROOT}/prowlarr:/config
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # FlareSolverr — solves Cloudflare challenges for protected public trackers.
+  # ---------------------------------------------------------------------------
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    ports:
+      - "8191:8191"
+    environment:
+      - TZ=${TZ}
+      - LOG_LEVEL=info
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Radarr — movies. Searches, downloads, then imports into /data/media/movies.
+  # ---------------------------------------------------------------------------
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    ports:
+      - "7878:7878"          # ->  http://localhost:7878
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_ROOT}/radarr:/config
+      - ${DATA_ROOT}:/data
+      - ${VIDEOS_ROOT}:/videos        # final movie library -> /videos/Movies
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Sonarr — TV. Searches, downloads, then imports into /data/media/tv.
+  # ---------------------------------------------------------------------------
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    ports:
+      - "8989:8989"          # ->  http://localhost:8989
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_ROOT}/sonarr:/config
+      - ${DATA_ROOT}:/data
+      - ${VIDEOS_ROOT}:/videos        # final TV library -> "/videos/TV Shows"
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Bazarr — automatic subtitles (OPTIONAL). Connects to Radarr + Sonarr.
+  # ---------------------------------------------------------------------------
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    ports:
+      - "6767:6767"          # ->  http://localhost:6767
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_ROOT}/bazarr:/config
+      - ${DATA_ROOT}:/data
+      - ${VIDEOS_ROOT}:/videos        # reads the library to fetch subtitles
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Seerr — friendly "request a movie/show" web UI (OPTIONAL).
+  # Signs in with your Plex account; routes requests to Radarr/Sonarr.
+  # NOTE: Seerr is NOT a LinuxServer image. It runs as the fixed "node" user
+  # (UID 1000), so there is no PUID/PGID, the config path is /app/config, and
+  # it needs `init: true` (the image ships no init process).
+  # ---------------------------------------------------------------------------
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    init: true
+    container_name: seerr
+    ports:
+      - "5055:5055"          # ->  http://localhost:5055
+    environment:
+      - TZ=${TZ}
+      - LOG_LEVEL=info
+    volumes:
+      - ${CONFIG_ROOT}/seerr:/app/config
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/settings/public || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # gluetun — VPN gateway + kill-switch.  PRE-WIRED BUT OFF.
+  # profiles:["vpn"] means this NEVER starts with a plain `docker compose up -d`.
+  # It only starts when you run `docker compose --profile vpn up -d`.
+  # ---------------------------------------------------------------------------
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    profiles: ["vpn"]
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - "8080:8080"          # qBittorrent Web UI is published HERE in VPN mode
+    environment:
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER:-}
+      - VPN_TYPE=${VPN_TYPE:-wireguard}
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY:-}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES:-}
+      - SERVER_CITIES=${SERVER_CITIES:-}
+      - TZ=${TZ}
+      # Let the other containers reach qBittorrent's Web UI through gluetun.
+      - FIREWALL_OUTBOUND_SUBNETS=172.16.0.0/12,192.168.0.0/16
+    volumes:
+      - ${CONFIG_ROOT}/gluetun:/gluetun
+    restart: unless-stopped
