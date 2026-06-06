@@ -46,7 +46,8 @@ After setup, each app has its own page you open in a browser:
 | Seerr | http://localhost:5055 | The page where you request things |
 | Bazarr | http://localhost:6767 | Gets subtitles (optional) |
 | FlareSolverr | (works in the background) | Helps reach protected search sites |
-| Plex | your existing Plex | Plays everything |
+| Jellyfin | http://localhost:8096 | Free player — and how you watch from anywhere |
+| Plex | your existing Plex | Plays everything at home |
 
 You do not need to sign up for any accounts except the Plex you already have.
 
@@ -297,12 +298,42 @@ Use a free, legal film so you are not downloading anything copyrighted:
 
 - Ask for **movies, TV, K-drama, and anime** in **Seerr** — all the same way.
 - Sonarr automatically grabs new episodes of shows you follow as they air.
-- Everything appears in Plex by itself.
+- Everything appears in **Plex and Jellyfin** by itself.
 - To pause or resume the whole server:
   ```powershell
   docker compose stop     # pause
   docker compose start    # resume
   ```
+
+---
+
+## Watch & request from anywhere (remote access)
+
+You can use your server away from home — in any phone or laptop **browser, with no app to install** —
+over your own domain with HTTPS. (Plex's remote streaming now costs money, so **Jellyfin** is the
+remote player: it's free and plays in a browser.)
+
+How it's wired (all in Docker):
+- **Jellyfin** (`http://localhost:8096`) — a free player that reads the **same** Movies/TV/Anime as
+  Plex. Do its quick first-run: create an admin account and add libraries pointing at `/media/Movies`,
+  `/media/TV Shows`, `/media/Anime`.
+- **Caddy** — a reverse proxy that gives tidy HTTPS links and exposes **only** Jellyfin and Seerr:
+  - `https://jellyfin.<your-domain>` — watch
+  - `https://request.<your-domain>` — request (Seerr)
+- **ddns-updater** — keeps your domain pointed at your home IP when it changes.
+
+To set it up:
+1. Put your domain's DNS on a provider (e.g. Namecheap); add A records `jellyfin` and `request` →
+   your public IP.
+2. Make sure you have a real public IP (not CGNAT): your router's WAN IP must match what
+   `https://api.ipify.org` shows. If it doesn't, port-forwarding can't work.
+3. Forward router ports **80 and 443** to this PC, and allow them in Windows Firewall.
+4. Put your subdomains in `C:\MediaStack\config\caddy\Caddyfile`, then `docker compose up -d caddy` —
+   it fetches the HTTPS certificates automatically.
+5. Add your registrar's Dynamic-DNS password to `C:\MediaStack\config\ddns-updater\config.json`.
+
+> **Only Jellyfin and Seerr are exposed** — never Radarr/Sonarr/qBittorrent/Prowlarr. Use strong
+> passwords. (Full detail is in the `remote-access` skill.)
 
 ---
 

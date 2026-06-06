@@ -148,6 +148,57 @@ services:
     restart: unless-stopped
 
   # ---------------------------------------------------------------------------
+  # Jellyfin — free media server for remote watching (no remote paywall, plays
+  # in a browser). Reads the SAME library as Plex. Exposed remotely via Caddy
+  # (jellyfin.<domain>). Plex stays for local use.
+  # ---------------------------------------------------------------------------
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - TZ=${TZ}
+    ports:
+      - "8096:8096"          # ->  http://localhost:8096
+    volumes:
+      - ${CONFIG_ROOT}/jellyfin:/config
+      - ${CONFIG_ROOT}/jellyfin-cache:/cache
+      - ${VIDEOS_ROOT}:/media        # existing Movies / TV Shows / Anime
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Caddy — reverse proxy with automatic HTTPS. Exposes ONLY the services listed
+  # in config/caddy/Caddyfile (Plex + Seerr) to the internet for remote access.
+  # Requires router ports 80 + 443 forwarded to this PC. Never expose the admin
+  # apps (Radarr/Sonarr/qBittorrent/Prowlarr).
+  # ---------------------------------------------------------------------------
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${CONFIG_ROOT}/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ${CONFIG_ROOT}/caddy/data:/data
+      - ${CONFIG_ROOT}/caddy/config:/config
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # ddns-updater — keeps the Namecheap DNS records (jellyfin/request/plex)
+  # pointed at the current dynamic public IP, so remote access survives ISP IP
+  # changes. The Namecheap DDNS password lives in
+  # config/ddns-updater/config.json (outside the repo — never committed).
+  # ---------------------------------------------------------------------------
+  ddns-updater:
+    image: qmcgaw/ddns-updater:latest
+    container_name: ddns-updater
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_ROOT}/ddns-updater:/updater/data
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
   # gluetun — VPN gateway + kill-switch.  PRE-WIRED BUT OFF.
   # profiles:["vpn"] means this NEVER starts with a plain `docker compose up -d`.
   # It only starts when you run `docker compose --profile vpn up -d`.

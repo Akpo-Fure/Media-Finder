@@ -30,12 +30,17 @@ Web UI: http://localhost:5055. Seerr is the rebranded successor to Overseerr.
    - **Anime routing:** in the same Sonarr server form set **Anime Series Type = Anime**, **Anime
      Quality Profile = HD-1080p**, **Anime Root Folder = `/videos/Anime`**. Seerr then sends anime
      requests there automatically (needs Nyaa/AnimeTosho in Prowlarr — see the `prowlarr` skill).
+5. **Connect Jellyfin (for remote watching):** Seerr supports Jellyfin — Settings → add your
+   Jellyfin server so "Available" status reflects the Jellyfin library. Plex stays connected for
+   at-home use.
 
 ## Gotchas
 - Hosts are `radarr` / `sonarr` / `host.docker.internal` — never `localhost` (that points at the
   Seerr container itself).
 - The Quality Profile / Root Folder dropdowns only populate **after** the connection succeeds; if
   they stay empty, the host or API key is wrong.
+- Reachable remotely at `https://request.<domain>` via the Caddy reverse proxy (see the
+  `remote-access` skill) — no app needed.
 
 ## Check
 `docker logs seerr` (look for "Server ready on port 5055") ·

@@ -1,14 +1,16 @@
 # Media Finder — guidance for Claude Code
 
-Media Finder is a self-hosted media stack (Plex + qBittorrent + Prowlarr + Radarr + Sonarr + Seerr
-+ Bazarr, run with Docker Desktop on Windows) that automatically downloads movies and TV into Plex.
+Media Finder is a self-hosted media stack (qBittorrent + Prowlarr + Radarr + Sonarr + Seerr + Bazarr
++ Jellyfin + Plex, plus a Caddy reverse proxy, run with Docker Desktop on Windows) that
+auto-downloads movies/TV/anime and serves them at home (Plex/Jellyfin) and remotely (Jellyfin over
+HTTPS).
 
 ## The person using this is non-technical
 
 They may simply open this folder and say "help me set up my media server." When they ask for help or
 seem unsure, **use the `media-finder-setup` skill** and guide them through the whole setup. For a
 specific app, use that app's skill: `qbittorrent`, `prowlarr`, `radarr`, `sonarr`, `seerr`,
-`bazarr`, `flaresolverr`, `plex`.
+`bazarr`, `flaresolverr`, `plex`, `jellyfin`, `remote-access`.
 
 **Content types:** movies, TV, K-drama, and anime are all requested in Seerr the same way. Anime
 just relies on the Nyaa/AnimeTosho indexers and the Sonarr "Anime" fields, which are set up
@@ -46,6 +48,8 @@ folder. The library lives in the user's `Videos` folder; downloads and app confi
    connect without a password (otherwise they show "Authentication Failure").
 3. The Radarr/Sonarr download-client **Host is `qbittorrent`**, never `localhost`.
 4. Set the Quality Profile to **1080p** (4K is huge and slow with few seeders).
+5. Remote watching is via **Jellyfin** (`jellyfin.<domain>`), not Plex — Plex's remote streaming is
+   paywalled. Caddy + DDNS handle remote access; expose only Jellyfin + Seerr, never the admin apps.
 
 ## Reference
 

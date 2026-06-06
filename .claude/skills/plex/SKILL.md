@@ -8,7 +8,10 @@ description: >-
 
 # Plex (port 32400) — the player (native Windows)
 
-Plex is the user's existing native Windows app — **not** a container. It plays everything.
+Plex is the user's existing native Windows app — **not** a container. It's the **at-home** player.
+For **remote** watching the stack uses **Jellyfin** instead (Plex's remote streaming is paywalled
+and the free workarounds are blocked) — see the `jellyfin` and `remote-access` skills. Both read the
+same library files.
 
 ## Setup (libraries)
 1. Settings (wrench) → Manage → Libraries → Add Library (or the + in the sidebar).
