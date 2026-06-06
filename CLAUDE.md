@@ -10,9 +10,9 @@ seem unsure, **use the `media-finder-setup` skill** and guide them through the w
 specific app, use that app's skill: `qbittorrent`, `prowlarr`, `radarr`, `sonarr`, `seerr`,
 `bazarr`, `flaresolverr`, `plex`.
 
-**Content types:** Movies / TV / K-drama → request in Seerr. Anime → add **Nyaa** + **AnimeTosho**
-in Prowlarr and set Seerr's anime routing. **Nigerian / Nollywood** → not on torrents and not
-self-hosted here; watch on official YouTube channels or streaming.
+**Content types:** movies, TV, K-drama, and anime are all requested in Seerr the same way. Anime
+just relies on the Nyaa/AnimeTosho indexers and the Sonarr "Anime" fields, which are set up
+alongside everything else during normal setup.
 
 ## How to guide them
 

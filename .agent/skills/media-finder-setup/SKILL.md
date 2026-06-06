@@ -41,12 +41,12 @@ values to type, verify each step, and ask for the exact error text when somethin
 
 ## Content types
 
-- **Movies / TV:** request in Seerr — works out of the box.
-- **Anime:** add **Nyaa** + **AnimeTosho** in Prowlarr and set Seerr's anime routing (see the
-  `prowlarr`, `sonarr`, and `seerr` skills), then request in Seerr.
-- **K-drama:** request in Seerr — covered by the public trackers; set Bazarr subtitles.
-- **Nigerian / Nollywood:** not on torrents and not self-hosted here — watch it on official
-  Nollywood **YouTube** channels (free) or a streaming app (Netflix Naija / Showmax).
+**Movies, TV, K-drama, and anime are all requested in Seerr — the same way.** They're set up at the
+same time during the normal flow:
+- The Prowlarr indexer list includes **Nyaa + AnimeTosho** (anime) alongside the general trackers.
+- Sonarr gets a `/videos/TV Shows` **and** a `/videos/Anime` root folder; Seerr's Sonarr server has
+  the **Anime** fields set so anime requests sort correctly.
+- K-drama needs nothing special (the general trackers cover it; set Bazarr subtitles).
 
 ## True for the whole stack
 

@@ -11,23 +11,16 @@ description: >-
 Web UI: http://localhost:8989. Identical to Radarr, with TV values.
 
 ## Setup
-1. **Root folder:** Settings → Media Management → Root Folders → + → `/videos/TV Shows`.
+1. **Root folders:** Settings → Media Management → Root Folders → add **`/videos/TV Shows`** and
+   **`/videos/Anime`** (anime gets its own folder because it uses absolute episode numbering).
 2. **Download client → qBittorrent:** Host **`qbittorrent`** (NOT `localhost`), Port `8080`,
    Category `tv`. Test → Save.
 3. **Quality:** Quality Profile **HD-1080p**.
 4. **Plex notifications:** Settings → Connect → Plex Media Server, host `host.docker.internal`,
    port `32400`, Authenticate with Plex.tv.
-
-## Anime (proper handling)
-
-Anime uses absolute episode numbering, so give it its own library:
-1. **Root folder:** add `/videos/Anime` (Settings → Media Management → Root Folders).
-2. **Series type:** for an anime show set its **Series Type = Anime** (Sonarr then handles absolute
-   numbering and anime release groups). Seerr can do this automatically — see the `seerr` skill's
-   anime routing.
-3. Make sure **Nyaa** / **AnimeTosho** are added in Prowlarr (see the `prowlarr` skill) so anime has
-   a source.
-4. Quality: HD-1080p is fine, or create a dedicated "Anime" profile.
+5. **Anime:** for an anime show set its **Series Type = Anime** (handles absolute numbering). Seerr
+   sets this automatically via its anime fields (see the `seerr` skill); anime needs **Nyaa** /
+   **AnimeTosho** in Prowlarr (see the `prowlarr` skill).
 
 ## Gotchas / fixes
 - Download client Host = `qbittorrent`, not `localhost`. "Authentication Failure" → qBittorrent

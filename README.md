@@ -185,16 +185,15 @@ When it first opens it asks you to make a username and password. Do that, then:
    - **Host**: `http://flaresolverr:8191`
    - **Tags**: type `flaresolverr` and press Enter
    - Click **Test**, then **Save**.
-2. **Add search sites.** Go to the **Indexers** page, click **Add Indexer**, and add a few that
-   work well: **Knaben**, **The Pirate Bay**, **1337x**, and **YTS** (YTS is movies only). Add each
-   one and click **Test**.
+2. **Add search sites.** Go to the **Indexers** page, click **Add Indexer**, and add these (they
+   cover movies, TV, K-drama, and anime): **Knaben**, **The Pirate Bay**, **1337x**, **YTS** (movies
+   only), **Nyaa**, and **AnimeTosho** (the last two are the anime trackers). Add each and **Test**.
    - **Tags:** leave the Tags box **blank** for normal sites (Knaben, 1337x, YTS, Nyaa, etc.). Only
      if a site shows a **Cloudflare** warning, open it and add the **`flaresolverr`** tag, then Test
      again.
    - **Note:** some old sites are dead and will just error — for example **TorrentGalaxy** (closed
      down) and **EZTV** (often shows "451"). Skip those and use the ones above.
-   - **For anime:** also add **Nyaa** and **AnimeTosho** (the main anime trackers). **K-drama**
-     works on the trackers above — no special one needed.
+   - **K-drama** works on these trackers — no special one needed.
 3. **Link Radarr and Sonarr** (come back and do this part *after* you finish sections C and D):
    - Go to **Settings → Apps**, click **+**, choose **Radarr**.
    - **Prowlarr Server**: `http://prowlarr:9696`
@@ -223,7 +222,8 @@ Set a username and password when asked, then:
 
 Exactly like Radarr, with TV values:
 
-1. **Root Folder**: `/videos/TV Shows`
+1. **Root Folders**: add `/videos/TV Shows` **and** `/videos/Anime` (anime gets its own folder — it
+   uses absolute episode numbering).
 2. **Download Client → qBittorrent**: Host `qbittorrent`, Port `8080`, Category `tv`. Test, Save.
 3. Set the **Quality Profile** to **1080p** as well.
 
@@ -271,9 +271,8 @@ This is the friendly page where you ask for movies and shows.
      turn on **Enable Automatic Search**, and Save.
 4. **Add Sonarr.** Same steps with **Hostname** `sonarr`, **Port** `8989`, Sonarr's API Key,
    **Root Folder** `/videos/TV Shows`, pick the available **Language Profile**, and Save.
-   - **For anime:** in the same form set **Anime Series Type** = `Anime`, **Anime Quality Profile**
-     = `HD-1080p`, and **Anime Root Folder** = `/videos/Anime`, so anime you request sorts into its
-     own library correctly. (Add **Nyaa** in Prowlarr first — Step B.)
+   - In the **same form**, also set the **Anime** fields so anime sorts correctly: **Anime Series
+     Type** = `Anime`, **Anime Quality Profile** = `HD-1080p`, **Anime Root Folder** = `/videos/Anime`.
 
 ## H. Bazarr (subtitles) – optional – http://localhost:6767
 
@@ -296,13 +295,9 @@ Use a free, legal film so you are not downloading anything copyrighted:
 
 ## Everyday use
 
-- Ask for movies and shows in **Seerr**.
+- Ask for **movies, TV, K-drama, and anime** in **Seerr** — all the same way.
 - Sonarr automatically grabs new episodes of shows you follow as they air.
 - Everything appears in Plex by itself.
-- **Anime and K-drama:** request them in **Seerr** like anything else (anime needs **Nyaa** added in
-  Prowlarr — Step B).
-- **Nigerian / Nollywood:** not self-hosted here (it's barely on torrents) — watch it on official
-  Nollywood **YouTube** channels, or a streaming app like Netflix Naija / Showmax.
 - To pause or resume the whole server:
   ```powershell
   docker compose stop     # pause

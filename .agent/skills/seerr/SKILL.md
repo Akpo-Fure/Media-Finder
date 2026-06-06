@@ -36,9 +36,6 @@ Web UI: http://localhost:5055. Seerr is the rebranded successor to Overseerr.
   Seerr container itself).
 - The Quality Profile / Root Folder dropdowns only populate **after** the connection succeeds; if
   they stay empty, the host or API key is wrong.
-- **Nigerian/Nollywood is NOT available here** — it's barely on torrents and patchy in TMDB, and is
-  not self-hosted in this stack. Watch it on official YouTube channels or streaming. Anime and
-  K-drama work normally in Seerr.
 
 ## Check
 `docker logs seerr` (look for "Server ready on port 5055") ·
