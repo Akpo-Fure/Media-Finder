@@ -39,7 +39,7 @@ Web UI: http://localhost:5055. Seerr is the rebranded successor to Overseerr.
   Seerr container itself).
 - The Quality Profile / Root Folder dropdowns only populate **after** the connection succeeds; if
   they stay empty, the host or API key is wrong.
-- Reachable remotely at `https://request.<domain>` via the Caddy reverse proxy (see the
+- Reachable remotely at `https://seer.<domain>` via the Caddy reverse proxy (see the
   `remote-access` skill) — no app needed.
 
 ## Check

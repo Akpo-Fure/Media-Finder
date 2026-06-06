@@ -29,6 +29,7 @@ something breaks. `README.md` has the full human-facing steps.
 | FlareSolverr | 8191 | Gets past Cloudflare (background) | `flaresolverr` |
 | Jellyfin | 8096 | Free playback incl. **remote** watching (browser) | `jellyfin` |
 | Plex | 32400 | Local playback at home (native Windows) | `plex` |
+| Homepage | 9999 | Dashboard — all apps, stats, links | `homepage` |
 
 Plus background infra for remote access — **Caddy** (reverse proxy + HTTPS) and **ddns-updater**
 (keeps DNS current): see the `remote-access` skill.

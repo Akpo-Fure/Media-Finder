@@ -48,6 +48,7 @@ After setup, each app has its own page you open in a browser:
 | FlareSolverr | (works in the background) | Helps reach protected search sites |
 | Jellyfin | http://localhost:8096 | Free player — and how you watch from anywhere |
 | Plex | your existing Plex | Plays everything at home |
+| Homepage | http://localhost:9999 | Dashboard — all apps, stats & links in one page |
 
 You do not need to sign up for any accounts except the Plex you already have.
 
@@ -111,7 +112,7 @@ Copy-Item .env.example .env
 
 Open `.env` in Notepad and set these. **These two are the only things you must personalise:**
 
-- **`TZ`** – your timezone, for example `Africa/Lagos` or `America/New_York`.
+- **`TZ`** – your timezone, for example `America/New_York` or `Europe/London`.
   (Full list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 - **`VIDEOS_ROOT`** – your Videos folder. To find the exact path, run this in PowerShell:
   `echo $env:USERPROFILE`. Take what it prints (for example `C:\Users\sam`), add `/Videos` on the
@@ -299,6 +300,7 @@ Use a free, legal film so you are not downloading anything copyrighted:
 - Ask for **movies, TV, K-drama, and anime** in **Seerr** — all the same way.
 - Sonarr automatically grabs new episodes of shows you follow as they air.
 - Everything appears in **Plex and Jellyfin** by itself.
+- Your **dashboard** (all apps in one page) is at `http://localhost:9999`.
 - To pause or resume the whole server:
   ```powershell
   docker compose stop     # pause
@@ -319,12 +321,12 @@ How it's wired (all in Docker):
   `/media/TV Shows`, `/media/Anime`.
 - **Caddy** — a reverse proxy that gives tidy HTTPS links and exposes **only** Jellyfin and Seerr:
   - `https://jellyfin.<your-domain>` — watch
-  - `https://request.<your-domain>` — request (Seerr)
+  - `https://seer.<your-domain>` — request (Seerr)
 - **ddns-updater** — keeps your domain pointed at your home IP when it changes.
 
 To set it up:
-1. Put your domain's DNS on a provider (e.g. Namecheap); add A records `jellyfin` and `request` →
-   your public IP.
+1. Put your domain's DNS on your registrar / DNS provider (one that supports Dynamic DNS — see
+   ddns-updater's provider list); add A records `jellyfin` and `seer` → your public IP.
 2. Make sure you have a real public IP (not CGNAT): your router's WAN IP must match what
    `https://api.ipify.org` shows. If it doesn't, port-forwarding can't work.
 3. Forward router ports **80 and 443** to this PC, and allow them in Windows Firewall.

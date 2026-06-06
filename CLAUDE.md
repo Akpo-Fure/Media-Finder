@@ -10,7 +10,7 @@ HTTPS).
 They may simply open this folder and say "help me set up my media server." When they ask for help or
 seem unsure, **use the `media-finder-setup` skill** and guide them through the whole setup. For a
 specific app, use that app's skill: `qbittorrent`, `prowlarr`, `radarr`, `sonarr`, `seerr`,
-`bazarr`, `flaresolverr`, `plex`, `jellyfin`, `remote-access`.
+`bazarr`, `flaresolverr`, `plex`, `jellyfin`, `remote-access`, `homepage`.
 
 **Content types:** movies, TV, K-drama, and anime are all requested in Seerr the same way. Anime
 just relies on the Nyaa/AnimeTosho indexers and the Sonarr "Anime" fields, which are set up

@@ -184,9 +184,9 @@ services:
     restart: unless-stopped
 
   # ---------------------------------------------------------------------------
-  # ddns-updater — keeps the Namecheap DNS records (jellyfin/request/plex)
+  # ddns-updater — keeps the DNS records (jellyfin/seer/plex) at your DNS provider
   # pointed at the current dynamic public IP, so remote access survives ISP IP
-  # changes. The Namecheap DDNS password lives in
+  # changes. The provider's DDNS password lives in
   # config/ddns-updater/config.json (outside the repo — never committed).
   # ---------------------------------------------------------------------------
   ddns-updater:
@@ -196,6 +196,23 @@ services:
       - TZ=${TZ}
     volumes:
       - ${CONFIG_ROOT}/ddns-updater:/updater/data
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Homepage — a dashboard at http://localhost:9999 showing all the apps, live
+  # stats, and quick links. LOCAL-ONLY (not exposed via Caddy) since it holds
+  # API keys. Config (with those keys) is in config/homepage (outside the repo).
+  # ---------------------------------------------------------------------------
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    ports:
+      - "9999:3000"          # host 9999 -> container's 3000;  http://localhost:9999
+    environment:
+      # add your PC's LAN IP too for access from other home devices, e.g. ...,192.168.x.x:9999
+      - HOMEPAGE_ALLOWED_HOSTS=localhost:9999
+    volumes:
+      - ${CONFIG_ROOT}/homepage:/app/config
     restart: unless-stopped
 
   # ---------------------------------------------------------------------------
