@@ -14,8 +14,8 @@ Web UI: http://localhost:9696. Set a login on first open.
 1. **Add FlareSolverr** (for Cloudflare-protected sites): Settings → Indexers → Indexer Proxies →
    + → FlareSolverr. Host `http://flaresolverr:8191`, add a Tag `flaresolverr`. Test → Save.
 2. **Add indexers:** Indexers → Add Indexer. Add these (they cover movies, TV, K-drama, and anime):
-   **Knaben, The Pirate Bay, 1337x, YTS** (movies-only), **Nyaa**, and **AnimeTosho** (the last two
-   are the anime trackers, usually pre-subbed). Test each.
+   **Knaben, The Pirate Bay, 1337x, LimeTorrents, YTS** (movies-only), **Nyaa**, and **AnimeTosho**
+   (the last two are the anime trackers, usually pre-subbed). Test each.
    - **Tags:** leave the Tags box **blank** for normal indexers (Knaben, 1337x, YTS, Nyaa, etc.).
      Only when a site fails with a **Cloudflare** challenge do you open it and add the
      `flaresolverr` tag.
@@ -23,7 +23,8 @@ Web UI: http://localhost:9696. Set a login on first open.
      need private Asian trackers like AvistaZ, account required).
 3. **Link Radarr + Sonarr** (do this after those apps exist): Settings → Apps → + → Radarr.
    Prowlarr Server `http://prowlarr:9696`, Radarr Server `http://radarr:7878`, API Key from
-   Radarr → Settings → General, Sync Level **Full Sync**. Repeat for Sonarr (`http://sonarr:8989`).
+   Radarr → Settings → General, Sync Level **Full Sync**. Repeat for Sonarr (`http://sonarr:8989`,
+   API Key from Sonarr → Settings → General).
    Indexers then appear in both automatically.
 
 ## Gotchas

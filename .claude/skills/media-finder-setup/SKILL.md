@@ -42,7 +42,8 @@ Plus background infra for remote access — **Caddy** (reverse proxy + HTTPS) an
 4. `docker compose up -d`.
 5. Connect the apps in this order — load each app's skill for detail:
    **qbittorrent → prowlarr → radarr → sonarr → plex & jellyfin (libraries) → seerr →
-   bazarr (optional)**. **flaresolverr** has no setup of its own (added inside Prowlarr).
+   bazarr (optional) → homepage (dashboard)**. **flaresolverr** has no setup of its own (added
+   inside Prowlarr).
 6. **Remote access:** set it up via the `remote-access` skill (domain DNS + Caddy + router
    port-forward + DDNS) so Jellyfin and Seerr are reachable from anywhere.
 7. Test end-to-end: request *Big Buck Bunny* (Creative-Commons) in Seerr → it appears in Jellyfin/Plex.
@@ -66,8 +67,10 @@ normal flow:
 
 - **Persistence:** containers are disposable; data lives on disk (`Videos` + `C:\MediaStack`).
 - **Routine stop/start:** `docker compose stop` / `start`. Use `down`/`up` only after editing compose.
-- **Storage:** big HDD over SSD; this Windows setup keeps two copies while seeding — enable "Remove
-  Completed" in Radarr/Sonarr + a qBittorrent ratio limit to reclaim space.
+- **Storage:** big HDD over SSD. Downloads (`/data`) and the library (`/videos`) sit on separate
+  paths, so each import is a **copy** — a finished torrent leaves two copies while it seeds. Enable
+  **Remove Completed** in the Radarr/Sonarr download client (+ a qBittorrent ratio limit) to clear
+  the download copy and reclaim space.
 - **Remote access:** Jellyfin (watch) + Seerr (request) are public over HTTPS via Caddy +
   port-forward + DDNS; admin apps stay LAN-only — see the `remote-access` skill.
 - **Legal:** the tools are legitimate; downloading copyrighted content without a licence is not.

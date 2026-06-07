@@ -93,6 +93,9 @@ $dirs = @(
   'C:\MediaStack\config\radarr','C:\MediaStack\config\sonarr',
   'C:\MediaStack\config\flaresolverr','C:\MediaStack\config\seerr',
   'C:\MediaStack\config\bazarr','C:\MediaStack\config\gluetun',
+  'C:\MediaStack\config\jellyfin','C:\MediaStack\config\jellyfin-cache',
+  'C:\MediaStack\config\caddy','C:\MediaStack\config\ddns-updater',
+  'C:\MediaStack\config\homepage',
   "$env:USERPROFILE\Videos\Movies","$env:USERPROFILE\Videos\TV Shows",
   "$env:USERPROFILE\Videos\Anime"
 )
@@ -229,9 +232,9 @@ Exactly like Radarr, with TV values:
 2. **Download Client → qBittorrent**: Host `qbittorrent`, Port `8080`, Category `tv`. Test, Save.
 3. Set the **Quality Profile** to **1080p** as well.
 
-## E. Tell Plex to update automatically
+## E. Tell Plex and Jellyfin to update automatically
 
-So new downloads show up in Plex on their own, set this in **both Radarr and Sonarr**:
+So new downloads show up in your players on their own, set this in **both Radarr and Sonarr**:
 
 1. Go to **Settings → Connect**, click **+**, choose **Plex Media Server**.
 2. **Hostname**: `host.docker.internal`  •  **Port**: `32400`
@@ -240,6 +243,10 @@ So new downloads show up in Plex on their own, set this in **both Radarr and Son
 
 > **Note:** if the Test fails, open PowerShell, run `ipconfig`, find your **IPv4 Address** (looks
 > like `192.168.x.x`), and use that number instead of `host.docker.internal`.
+
+If you also use **Jellyfin** (the remote player — see "Watch & request from anywhere" below), add a
+second connection here the same way: **Emby / Jellyfin**, Host `jellyfin`, Port `8096`, **API Key**
+from Jellyfin → Dashboard → API Keys, tick **Update Library**. Then both players update on their own.
 
 ## F. Add your libraries to Plex
 
@@ -263,7 +270,9 @@ This is the friendly page where you ask for movies and shows.
    **Server** dropdown to fetch your server automatically, or fill it in by hand:
    - **Hostname or IP Address**: `host.docker.internal` (or your `192.168.x.x` address)
    - **Port**: `32400`
-   - Save, then click **Sync Libraries** and turn on your Movies and TV libraries.
+   - Save, then click **Sync Libraries** and turn on **all** of them — **Movies, TV Shows, and
+     Anime**. Seerr only shows a title as "Available" for libraries that are turned on here. (If a
+     library is missing from the list — e.g. Anime — click **Sync Libraries** again to pick it up.)
 3. **Add Radarr.** Go to **Settings → Services → Add Radarr Server**:
    - **Default Server**: on  •  **4K Server**: off
    - **Hostname or IP Address**: `radarr`  — **Important:** the word `radarr`, not localhost.
@@ -318,15 +327,20 @@ remote player: it's free and plays in a browser.)
 How it's wired (all in Docker):
 - **Jellyfin** (`http://localhost:8096`) — a free player that reads the **same** Movies/TV/Anime as
   Plex. Do its quick first-run: create an admin account and add libraries pointing at `/media/Movies`,
-  `/media/TV Shows`, `/media/Anime`.
-- **Caddy** — a reverse proxy that gives tidy HTTPS links and exposes **only** Jellyfin and Seerr:
+  `/media/TV Shows`, and `/media/Anime`. For the **Anime** library, set its **Metadata Language** to
+  **English (US)** so anime match the right entry and show English titles.
+- **Caddy** — a reverse proxy that gives tidy HTTPS links. It exposes **Jellyfin** and **Seerr** (and
+  optionally **Plex**):
   - `https://jellyfin.<your-domain>` — watch
   - `https://seer.<your-domain>` — request (Seerr)
+  - `https://plex.<your-domain>` — optional; reaches Plex's web page remotely, but Plex's remote
+    *streaming* needs paid Plex Pass, so use Jellyfin to actually watch.
 - **ddns-updater** — keeps your domain pointed at your home IP when it changes.
 
 To set it up:
 1. Put your domain's DNS on your registrar / DNS provider (one that supports Dynamic DNS — see
-   ddns-updater's provider list); add A records `jellyfin` and `seer` → your public IP.
+   ddns-updater's provider list); add A records `jellyfin`, `seer` (and `plex` if you expose it) →
+   your public IP.
 2. Make sure you have a real public IP (not CGNAT): your router's WAN IP must match what
    `https://api.ipify.org` shows. If it doesn't, port-forwarding can't work.
 3. Forward router ports **80 and 443** to this PC, and allow them in Windows Firewall.
@@ -334,8 +348,8 @@ To set it up:
    it fetches the HTTPS certificates automatically.
 5. Add your registrar's Dynamic-DNS password to `C:\MediaStack\config\ddns-updater\config.json`.
 
-> **Only Jellyfin and Seerr are exposed** — never Radarr/Sonarr/qBittorrent/Prowlarr. Use strong
-> passwords. (Full detail is in the `remote-access` skill.)
+> **Only Jellyfin, Seerr (and optionally Plex) are exposed** — never Radarr/Sonarr/qBittorrent/
+> Prowlarr. Use strong passwords. (Full detail is in the `remote-access` skill.)
 
 ---
 
@@ -426,6 +440,17 @@ is blocking these sites — turn on the VPN.
 **Downloads are extremely slow / it says it will take days.**
 It picked a 4K file. Set the Quality Profile to **1080p** in Radarr and Sonarr, or use **Interactive
 Search** and choose a 1080p result with lots of seeders.
+
+**An anime downloaded but won't appear ("Episode X was not found in the grabbed release").**
+Anime "complete series" packs sometimes use episode numbering Sonarr can't match. In **Sonarr →
+Activity** (or **Wanted**), use **Manual Import**: point it at the download folder and Sonarr re-reads
+each file and files it correctly. After a manual import, scan your Plex and Jellyfin libraries by hand
+(they only auto-update on a normal import).
+
+**Requesting an anime grabbed a big pile of downloads.**
+A long-running anime makes Sonarr search every episode at once, so it can grab several overlapping
+releases (season packs, batches, single episodes). Keep one well-seeded batch and remove the rest in
+qBittorrent — using **Interactive Search** to pick a single release avoids it.
 
 **New movies/shows aren't appearing in Plex.**
 Make sure you did step E (Plex notifications), and that the Plex library folders match

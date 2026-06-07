@@ -49,7 +49,18 @@ folder. The library lives in the user's `Videos` folder; downloads and app confi
 3. The Radarr/Sonarr download-client **Host is `qbittorrent`**, never `localhost`.
 4. Set the Quality Profile to **1080p** (4K is huge and slow with few seeders).
 5. Remote watching is via **Jellyfin** (`jellyfin.<domain>`), not Plex — Plex's remote streaming is
-   paywalled. Caddy + DDNS handle remote access; expose only Jellyfin + Seerr, never the admin apps.
+   paywalled. Caddy + DDNS handle remote access; expose Jellyfin + Seerr (`seer.<domain>`) and
+   optionally Plex (`plex.<domain>`), never the admin apps.
+6. **Seerr availability:** Seerr only marks titles **Available** for Plex libraries that are enabled
+   in Seerr → Settings → Plex. Enable all (incl. Anime); if one is missing, Sync Libraries, then run
+   Plex Full Scan + Availability Sync.
+7. **Anime over-grab + import recovery:** a long-running anime makes Sonarr search every episode and
+   grab overlapping releases — keep one batch, drop the rest. If a batch fails with "Episode X was
+   not found in the grabbed release" (numbering mismatch), recover via Sonarr → Activity → **Manual
+   Import**, then scan the players by hand (manual imports skip the notifications).
+8. **Jellyfin** stays in sync via notifications in Radarr/Sonarr (set **both** Plex and Jellyfin,
+   Update Library on), and its **Anime library must use English metadata** or it matches the wrong
+   entry (wrong artwork / non-English titles).
 
 ## Reference
 

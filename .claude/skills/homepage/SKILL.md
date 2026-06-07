@@ -19,18 +19,21 @@ One page at `http://localhost:9999` showing all the apps with live stats + quick
 - `widgets.yaml` — info widgets (CPU/memory, search bar).
 - Homepage also auto-creates `docker.yaml` / `bookmarks.yaml` / `custom.css` etc. (unused defaults).
 
-## Wired widgets
-Radarr, Sonarr, Prowlarr, and Seerr (`overseerr` widget type) have **live widgets** — keys were read
-from each app's own config. qBittorrent, Bazarr, Jellyfin, Plex are tiles/links for now; add their
-widgets by putting the key/login into `services.yaml`:
-- qBittorrent → `type: qbittorrent`, `url: http://qbittorrent:8080`, `username`, `password`.
+## Widgets
+Radarr, Sonarr, Prowlarr, Seerr (`overseerr` type), qBittorrent, and Jellyfin have **live widgets**;
+each reads its app over the Docker network with the app's own API key. Bazarr and Plex are quick-link
+tiles — add their widgets the same way if you want live stats:
+- qBittorrent → `type: qbittorrent`, `url: http://qbittorrent:8080` — **no username/password** (the
+  qBittorrent subnet whitelist lets Homepage in over the Docker network).
+- Jellyfin → `type: jellyfin`, `url: http://jellyfin:8096`, key from Jellyfin → Dashboard → API Keys.
 - Bazarr → `type: bazarr`, key from Bazarr → Settings → General.
-- Jellyfin → `type: jellyfin`, key from Jellyfin → Dashboard → API Keys.
 - Plex → `type: plex`, a Plex token.
 
 ## Gotchas
-- **`HOMEPAGE_ALLOWED_HOSTS`** (in `docker-compose.yml`) must list every `host:port` you open it with
-  (`localhost:9999,<your-LAN-IP>:9999`) or it shows "host validation failed".
+- **`HOMEPAGE_ALLOWED_HOSTS`** (in `docker-compose.yml`) lists every `host:port` you open Homepage
+  with; it ships as `localhost:9999`. To reach it from another device on your home network, add your
+  PC's LAN IP — e.g. `HOMEPAGE_ALLOWED_HOSTS=localhost:9999,192.168.x.x:9999` — then
+  `docker compose up -d homepage`. A missing/wrong entry shows "host validation failed".
 - A widget's `url` is the **container** name/port (`radarr:7878`), not `localhost`; the `href` is the
   clickable `localhost` link.
 - Keep it **local** — don't expose it via Caddy (it holds API keys). If you ever must, put auth in front.

@@ -17,22 +17,25 @@ same library files.
 1. Settings (wrench) → Manage → Libraries → Add Library (or the + in the sidebar).
 2. **Movies** → folder `C:\Users\<you>\Videos\Movies`.
 3. **TV Shows** → folder `C:\Users\<you>\Videos\TV Shows`.
-   - **Anime** (TV Shows type) → `C:\Users\<you>\Videos\Anime`. (Advanced: the HAMA agent matches
-     anime better, but the default agent works.)
+   - **Anime** (TV Shows type) → `C:\Users\<you>\Videos\Anime`.
 4. Settings → Library → tick **Scan my library automatically** (a backup to the Radarr/Sonarr
    notifications).
 
 ## How the stack connects to Plex
-- Radarr/Sonarr (Settings → Connect → Plex Media Server) and Seerr point at Plex using host
-  **`host.docker.internal`**, port **`32400`** — because they run in containers and Plex is on the
-  host. Fallback: the PC's LAN IPv4 from `ipconfig`.
+- Radarr/Sonarr (Settings → Connect) notify **both Plex and Jellyfin** on import, so new media shows
+  up in each on its own. They reach Plex at host **`host.docker.internal`**, port **`32400`** (they
+  run in containers, Plex is on the host; fallback: the PC's LAN IPv4 from `ipconfig`).
+- Seerr also points at Plex (`host.docker.internal:32400`) to read what's already in the library.
 
 ## Gotchas
 - **Plex can't see your `C:` drive** when adding a library → Plex is running as a different Windows
   user; run it as your own account (or grant that account read access to the Videos folder).
 - Plex uses **Windows paths** (`C:\Users\...\Videos\...`), not the container paths (`/videos/...`).
 - New media not appearing → confirm the Radarr/Sonarr Plex "Connect" is set up and the Plex library
-  folder matches the Videos path.
+  folder matches the Videos path. A **manual import** in Sonarr/Radarr skips the notification — scan
+  the Plex library by hand after one.
+- Seerr marks titles **Available** only for Plex libraries that are **enabled** in Seerr
+  (Settings → Plex) — enable all incl. Anime and re-sync if one is missing (see the `seerr` skill).
 
 ## Check
 In the Plex web app the Movies/TV libraries should scan and play. From a container, test
