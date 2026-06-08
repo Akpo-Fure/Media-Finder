@@ -13,7 +13,7 @@ Web UI: http://localhost:7878. Set a login when asked.
 ## Setup
 1. **Root folder:** Settings → Media Management → Root Folders → + → `/videos/Movies`.
 2. **Download client:** Settings → Download Clients → + → qBittorrent. Host **`qbittorrent`**
-   (NOT `localhost`), Port `8080`, Category `movies`. Test → Save. Tick **Remove Completed**
+   (NOT `localhost`), Port `8088`, Category `movies`. Test → Save. Tick **Remove Completed**
    (Completed Download Handling) so a finished torrent is cleared once imported — downloads and the
    library are separate copies, so this reclaims the duplicate disk space.
 3. **Quality:** Settings → Profiles → Quality Profiles → use **HD-1080p** (avoid 4K — huge and

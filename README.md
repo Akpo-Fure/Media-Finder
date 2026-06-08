@@ -39,7 +39,7 @@ After setup, each app has its own page you open in a browser:
 
 | App | Address | What it does |
 |---|---|---|
-| qBittorrent | http://localhost:8080 | Downloads the files |
+| qBittorrent | http://localhost:8088 | Downloads the files |
 | Prowlarr | http://localhost:9696 | Manages the websites it searches |
 | Radarr | http://localhost:7878 | Handles movies |
 | Sonarr | http://localhost:8989 | Handles TV shows |
@@ -150,7 +150,7 @@ Open each address from the table above in your browser to confirm the pages load
 Do these in the order shown. It is mostly typing values and clicking Save. The lines marked
 **Important** are the ones beginners most often get wrong.
 
-## A. qBittorrent (the downloader) – http://localhost:8080
+## A. qBittorrent (the downloader) – http://localhost:8088
 
 **Log in for the first time.** Go to PowerShell and run:
 
@@ -216,7 +216,7 @@ Set a username and password when asked, then:
    `/videos/Movies`
 2. **Settings → Download Clients**, click **+**, choose **qBittorrent**:
    - **Host**: `qbittorrent`  — **Important:** type the word `qbittorrent`, not `localhost`.
-   - **Port**: `8080`
+   - **Port**: `8088`
    - **Category**: `movies`
    - Click **Test** (it should turn green), then **Save**.
 3. **Avoid huge, slow downloads.** Go to **Settings → Profiles → Quality Profiles** and use the
@@ -229,7 +229,7 @@ Exactly like Radarr, with TV values:
 
 1. **Root Folders**: add `/videos/TV Shows` **and** `/videos/Anime` (anime gets its own folder — it
    uses absolute episode numbering).
-2. **Download Client → qBittorrent**: Host `qbittorrent`, Port `8080`, Category `tv`. Test, Save.
+2. **Download Client → qBittorrent**: Host `qbittorrent`, Port `8088`, Category `tv`. Test, Save.
 3. Set the **Quality Profile** to **1080p** as well.
 
 ## E. Tell Plex and Jellyfin to update automatically
@@ -416,7 +416,7 @@ legally.
 ## Fixes for common problems
 
 **Radarr or Sonarr says "Unable to connect to qBittorrent".**
-The Host is wrong. It must be the word `qbittorrent` (not `localhost`), with Port `8080`.
+The Host is wrong. It must be the word `qbittorrent` (not `localhost`), with Port `8088`.
 
 **Radarr or Sonarr says "Authentication Failure".**
 Do step A3: in qBittorrent, turn on **Bypass authentication for clients in whitelisted IP subnets**
@@ -425,7 +425,7 @@ and enter `172.16.0.0/12`, then Save. After that the password no longer matters.
 **A setting in qBittorrent won't stick / your password didn't save.**
 You didn't press **Save**. Scroll to the very bottom of the qBittorrent settings page and click it.
 
-**qBittorrent's page (http://localhost:8080) won't load after a restart.**
+**qBittorrent's page (http://localhost:8088) won't load after a restart.**
 It can get stuck after being stopped mid-download. Fix it with this one line, then wait ~15 seconds:
 ```powershell
 docker exec qbittorrent rm -f /config/qBittorrent/ipc-socket /config/qBittorrent/lockfile

@@ -17,7 +17,7 @@ services:
     container_name: qbittorrent
     # === DEFAULT (NO VPN): qBittorrent uses the normal Docker network ===
     ports:
-      - "8080:8080"          # Web UI  ->  http://localhost:8080
+      - "8088:8088"          # Web UI  ->  http://localhost:8088
       - "6881:6881"          # torrent traffic (TCP)
       - "6881:6881/udp"      # torrent traffic (UDP / DHT)
     # === TO ENABLE VPN later: comment the ENTIRE `ports:` block above, then
@@ -32,7 +32,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - WEBUI_PORT=8080
+      - WEBUI_PORT=8088
     volumes:
       - ${CONFIG_ROOT}/qbittorrent:/config
       - ${DATA_ROOT}:/data
@@ -229,7 +229,7 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
-      - "8080:8080"          # qBittorrent Web UI is published HERE in VPN mode
+      - "8088:8088"          # qBittorrent Web UI is published HERE in VPN mode
     environment:
       - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER:-}
       - VPN_TYPE=${VPN_TYPE:-wireguard}

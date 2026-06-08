@@ -23,7 +23,7 @@ One page at `http://localhost:9999` showing all the apps with live stats + quick
 Radarr, Sonarr, Prowlarr, Seerr (`overseerr` type), qBittorrent, and Jellyfin have **live widgets**;
 each reads its app over the Docker network with the app's own API key. Bazarr and Plex are quick-link
 tiles — add their widgets the same way if you want live stats:
-- qBittorrent → `type: qbittorrent`, `url: http://qbittorrent:8080` — **no username/password** (the
+- qBittorrent → `type: qbittorrent`, `url: http://qbittorrent:8088` — **no username/password** (the
   qBittorrent subnet whitelist lets Homepage in over the Docker network).
 - Jellyfin → `type: jellyfin`, `url: http://jellyfin:8096`, key from Jellyfin → Dashboard → API Keys.
 - Bazarr → `type: bazarr`, key from Bazarr → Settings → General.

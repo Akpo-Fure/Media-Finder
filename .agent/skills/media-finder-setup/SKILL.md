@@ -20,7 +20,7 @@ something breaks. `README.md` has the full human-facing steps.
 
 | App | Port | Job | Skill |
 |---|---|---|---|
-| qBittorrent | 8080 | Downloads the torrents | `qbittorrent` |
+| qBittorrent | 8088 | Downloads the torrents | `qbittorrent` |
 | Prowlarr | 9696 | Manages search sites, syncs them to Radarr/Sonarr | `prowlarr` |
 | Radarr | 7878 | Movies | `radarr` |
 | Sonarr | 8989 | TV (and anime) | `sonarr` |

@@ -13,7 +13,7 @@ Web UI: http://localhost:8989. Same pattern as Radarr, with TV values.
 ## Setup
 1. **Root folders:** Settings → Media Management → Root Folders → add **`/videos/TV Shows`** and
    **`/videos/Anime`** (anime gets its own folder because it uses absolute episode numbering).
-2. **Download client → qBittorrent:** Host **`qbittorrent`** (NOT `localhost`), Port `8080`,
+2. **Download client → qBittorrent:** Host **`qbittorrent`** (NOT `localhost`), Port `8088`,
    Category `tv`. Test → Save. Tick **Remove Completed** (Completed Download Handling) so a finished
    torrent is cleared once imported — downloads and the library are separate copies, so this reclaims
    the duplicate disk space.

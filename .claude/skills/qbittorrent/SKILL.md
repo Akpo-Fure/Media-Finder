@@ -2,13 +2,13 @@
 name: qbittorrent
 description: >-
   Set up or fix qBittorrent (the torrent downloader) in the Media Finder stack — web UI on
-  http://localhost:8080. Use for the qBittorrent login, save paths, the subnet whitelist that lets
+  http://localhost:8088. Use for the qBittorrent login, save paths, the subnet whitelist that lets
   Radarr/Sonarr connect, seeding limits, or a qBittorrent web UI that won't load.
 ---
 
-# qBittorrent (port 8080) — the downloader
+# qBittorrent (port 8088) — the downloader
 
-Web UI: http://localhost:8080. Guide a non-technical user one step at a time; verify each step.
+Web UI: http://localhost:8088. Guide a non-technical user one step at a time; verify each step.
 
 ## First login
 - Get the temporary password: `docker logs qbittorrent` (look for "temporary password").
@@ -30,7 +30,7 @@ Web UI: http://localhost:8080. Guide a non-technical user one step at a time; ve
 Do **not** create `movies`/`tv` categories by hand — Radarr and Sonarr create them automatically.
 
 ## How other apps reach it
-Radarr/Sonarr download client → **Host `qbittorrent`, Port `8080`** (never `localhost`).
+Radarr/Sonarr download client → **Host `qbittorrent`, Port `8088`** (never `localhost`).
 
 ## Gotchas / fixes
 - Radarr/Sonarr **"Authentication Failure"** → the whitelist (step 2) is missing/wrong.
@@ -40,4 +40,4 @@ Radarr/Sonarr download client → **Host `qbittorrent`, Port `8080`** (never `lo
   then wait ~15 s. Prefer `docker compose stop`/`start` over `down`/`up`.
 
 ## Check
-`docker logs qbittorrent` · `Invoke-WebRequest http://localhost:8080 -UseBasicParsing`.
+`docker logs qbittorrent` · `Invoke-WebRequest http://localhost:8088 -UseBasicParsing`.
